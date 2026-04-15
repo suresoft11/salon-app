@@ -31,32 +31,37 @@ class _SplashScreenState extends State<SplashScreen> {
 
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min, // 🔥 important fix
           children: [
-            // 🌺 Hibiscus Icon
-            Icon(Icons.local_florist, size: 110, color: hibiscus),
-
-            const SizedBox(height: 20),
-
+            // 🌺 TEXT
             Text(
               "Sri Vijaya's Beauty Salon",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: hibiscus,
               ),
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
 
             Text(
               "Glow with Confidence ✨",
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 fontStyle: FontStyle.italic,
                 color: hibiscus.withOpacity(0.7),
               ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // 🛕 IMAGE (controlled size)
+            Image.asset(
+              'assets/gopuram.png',
+              height: 220, // 🔥 fix size instead of scale
+              fit: BoxFit.contain,
             ),
           ],
         ),
