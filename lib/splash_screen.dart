@@ -16,26 +16,30 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  late Animation<double> _textFade;
 
   @override
   void initState() {
     super.initState();
 
-    // 🎬 Animation controller
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 2000),
     );
 
-    // 🌫️ Fade animation
     _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(_controller);
 
-    // 🔍 Scale animation (slight zoom)
-    _scaleAnimation = Tween<double>(begin: 0.9, end: 1).animate(_controller);
+    _scaleAnimation = Tween<double>(
+      begin: 0.85,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _textFade = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: const Interval(0.3, 1)),
+    );
 
     _controller.forward();
 
-    // ⏳ Navigate after delay
     Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
@@ -53,50 +57,91 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-
-      body: Center(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // 🌺 TEXT
-                Text(
-                  "Sri Vijaya's Beauty Salon",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: hibiscus,
-                  ),
-                ),
-
-                const SizedBox(height: 6),
-
-                Text(
-                  "Glow with Confidence ✨",
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontStyle: FontStyle.italic,
-                    color: hibiscus.withOpacity(0.7),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // 🛕 IMAGE
-                Image.asset(
-                  'assets/gopuram.png',
-                  height: 220,
-                  fit: BoxFit.contain,
-                ),
-              ],
+      body: Stack(
+        children: [
+          // 🌅 PREMIUM GRADIENT BACKGROUND
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white,
+                  const Color(0xFFFCE4EC), // light pink
+                  const Color(0xFFF8BBD0), // soft hibiscus
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
           ),
-        ),
+
+          // 🌟 MAIN CONTENT
+          Center(
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 🌺 TEXT
+                    FadeTransition(
+                      opacity: _textFade,
+                      child: Column(
+                        children: [
+                          Text(
+                            "Sri Vijaya's Beauty Salon",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                              color: hibiscus,
+                            ),
+                          ),
+
+                          const SizedBox(height: 6),
+
+                          Text(
+                            "Glow with Confidence ✨",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontStyle: FontStyle.italic,
+                              color: hibiscus.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    // 🛕 IMAGE WITH GLOW EFFECT
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: hibiscus.withOpacity(0.3),
+                            blurRadius: 20,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          'assets/gopuram.png',
+                          height: 230,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
